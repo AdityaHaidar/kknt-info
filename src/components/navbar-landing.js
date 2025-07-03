@@ -1,10 +1,32 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
+
+// Komponen fallback sementara navbar loading
+function NavbarFallback() {
+  return (
+    <nav className="sticky top-0 z-50 bg-white shadow-md">
+      <div className="flex justify-between items-center py-3 px-4 md:px-8 lg:px-16">
+        <div className="flex items-center">
+          <Image
+            src="/assets/mainLogo.png"
+            alt="Main Logo"
+            width={120}
+            height={40}
+            className="md:w-[150px] md:h-[50px]"
+          />
+        </div>
+        <div className="hidden lg:flex items-center justify-center flex-1">
+          <div className="animate-pulse bg-gray-200 h-8 w-96 rounded"></div>
+        </div>
+      </div>
+    </nav>
+  );
+}
 
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -483,4 +505,13 @@ const handleSectionNavigation = (sectionId) => {
   );
 }
 
-export default Navbar;
+// Komponen wrapper untuk bagian yang menggunakan useSearchParams
+function NavbarWithSearchParams() {
+  return (
+    <Suspense fallback={<NavbarFallback />}>
+      <Navbar />
+    </Suspense>
+  );
+}
+
+export default NavbarWithSearchParams;
